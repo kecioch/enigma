@@ -4,6 +4,8 @@ exports.Rotor = void 0;
 const constants_1 = require("./constants");
 class Rotor {
     constructor({ wiring, startPos = 0 }) {
+        // Method to get the current position
+        this.getPosition = () => this.position;
         this.position = 0;
         this.wiringOffset = [];
         this.output = [];
@@ -19,7 +21,7 @@ class Rotor {
     }
     // Methode to rotate the rotor
     rotate() {
-        this.position = (this.position + 1) % constants_1.ALPHABET.length;
+        this.position = (this.position + 1) % 26;
         const firstOffset = this.wiringOffset.shift();
         if (firstOffset !== null && firstOffset !== undefined)
             this.wiringOffset.push(firstOffset);
@@ -31,11 +33,11 @@ class Rotor {
             this.output[i] = output;
         }
     }
-    // Method to encode/decode a letter (in->out)
+    // Method to encode/decode a letter forwards (in->out)
     forward(input) {
         return this.output[constants_1.ALPHABET.indexOf(input)];
     }
-    // Method to encode/decode a letter in reverse (out->in)
+    // Method to encode/decode a letter backwards (out->in)
     backward(input) {
         return constants_1.ALPHABET[this.output.indexOf(input)];
     }

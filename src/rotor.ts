@@ -27,9 +27,12 @@ export class Rotor {
     }
   }
 
+  // Method to get the current position
+  public getPosition = () => this.position;
+
   // Methode to rotate the rotor
   public rotate() {
-    this.position = (this.position + 1) % ALPHABET.length;
+    this.position = (this.position + 1) % 26;
 
     const firstOffset = this.wiringOffset.shift();
     if (firstOffset !== null && firstOffset !== undefined)
@@ -43,12 +46,12 @@ export class Rotor {
     }
   }
 
-  // Method to encode/decode a letter (in->out)
+  // Method to encode/decode a letter forwards (in->out)
   public forward(input: string): string {
     return this.output[ALPHABET.indexOf(input)];
   }
 
-  // Method to encode/decode a letter in reverse (out->in)
+  // Method to encode/decode a letter backwards (out->in)
   public backward(input: string): string {
     return ALPHABET[this.output.indexOf(input)];
   }
