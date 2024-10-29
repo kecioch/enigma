@@ -10,11 +10,12 @@ class Enigma {
         this.rotorReverse = new rotor_1.Rotor(rotorConfigRev);
         this.rotations = 0;
     }
+    // Method to encode an input based on enigma rotors
     encode(input) {
         let encoded = "";
-        // Enocde letter by letter
+        // Encode letter by letter
         for (let i = 0; i < input.length; i++) {
-            // Calculate current rotations
+            // Update current rotations
             this.checkRotations();
             // Encode current letter
             const letter = input[i];
@@ -29,14 +30,16 @@ class Enigma {
         }
         return encoded;
     }
+    // Method to update the rotations of every rotor
     checkRotations() {
         this.rotations++;
         this.rotorA.rotate();
         const posA = this.rotorA.getPosition();
         const posB = this.rotorB.getPosition();
-        if (posA > 0 && posA % 22 === 0)
+        // Rotate rotors based on previous rotor notches
+        if (posA > 0 && posA % this.rotorA.getNotch() === 0)
             this.rotorB.rotate();
-        if (posB > 0 && posB % 4 === 0)
+        if (posB > 0 && posB % this.rotorB.getNotch() === 0)
             this.rotorC.rotate();
     }
 }
