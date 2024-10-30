@@ -1,4 +1,5 @@
 import { ALPHABET } from "./constants";
+import { EnigmaBaseComponent } from "./enigma-base-component";
 
 export interface RotorConfig {
   wiring: string;
@@ -6,22 +7,21 @@ export interface RotorConfig {
   startPos?: number;
 }
 
-export class Rotor {
+export class Rotor extends EnigmaBaseComponent {
   private wiringOffset: number[]; // Represent the internal wiring. Offset = Index_Wiring_Letter_Alphabet - Index_Letter_Alphabet
-  private output: string[]; // Outputs for every letter in alphabet
   private position: number; // Current rotation
   private notch: number; // Notch that triggers rotation of next rotor
 
   constructor({ wiring, notch = 1, startPos = 0 }: RotorConfig) {
+    super(wiring);
     this.position = 0;
     this.notch = notch;
     this.wiringOffset = [];
-    this.output = [];
 
     // Create wiringOffset and output array
     for (let i = 0; i < wiring.length; i++) {
       const offset = ALPHABET.indexOf(wiring[i]) - i;
-      const output = ALPHABET[(i + offset + 26) % 26];
+      const output = ALPHABET[(i + offset + ALPHABET.length) % ALPHABET.length];
       this.wiringOffset.push(offset);
       this.output.push(output);
     }
@@ -40,7 +40,7 @@ export class Rotor {
 
   // Method to rotate the rotor
   public rotate() {
-    this.position = (this.position + 1) % 26;
+    this.position = (this.position + 1) % ALPHABET.length;
 
     // Shift wiringOffset array and add first element to the end
     const firstOffset = this.wiringOffset.shift();
@@ -51,16 +51,9 @@ export class Rotor {
     // Update output array for every letter in alphabet
     for (let i = 0; i < this.output.length; i++) {
       const offset = this.wiringOffset[i];
-      const output = ALPHABET[(i + offset + 26) % 26];
+      const output = ALPHABET[(i + offset + ALPHABET.length) % ALPHABET.length];
       this.output[i] = output;
     }
-  }
-
-  // Method to encode/decode a letter forwards (in->out)
-  public forward(input: string): string {
-    const res = this.output[ALPHABET.indexOf(input.toUpperCase())];
-    if (res === undefined || res === null) throw new Error("Wrong rotor input");
-    return res;
   }
 
   // Method to encode/decode a letter backwards (out->in)

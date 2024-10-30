@@ -1,3 +1,4 @@
+import { ALPHABET } from "./constants";
 import { Enigma } from "./enigma";
 import { RotorConfig } from "./rotor";
 
@@ -6,17 +7,20 @@ type BruteForceEnigmaResult = {
   plainText: string;
 };
 
+// Method to launch a brute force attack on the enigma for a given plugboard configuration
 export function bruteForceEnigma(
   cipherText: string,
   knownPlainText: string,
   configA: RotorConfig,
   configB: RotorConfig,
   configC: RotorConfig,
-  configRev: RotorConfig
+  reflectorConfig: string,
+  plugboardConfig: Map<string, string>
 ): BruteForceEnigmaResult | null {
-  for (let posA = 0; posA < 26; posA++) {
-    for (let posB = 0; posB < 26; posB++) {
-      for (let posC = 0; posC < 26; posC++) {
+  for (let posA = 0; posA < ALPHABET.length; posA++) {
+    for (let posB = 0; posB < ALPHABET.length; posB++) {
+      for (let posC = 0; posC < ALPHABET.length; posC++) {
+        // Create configurations
         const rotorConfigA: RotorConfig = {
           ...configA,
           startPos: posA,
@@ -29,15 +33,17 @@ export function bruteForceEnigma(
           ...configC,
           startPos: posC,
         };
-        const rotorConfigRev: RotorConfig = { wiring: configRev.wiring };
 
+        // Init enigma
         const enigma = new Enigma(
           rotorConfigA,
           rotorConfigB,
           rotorConfigC,
-          rotorConfigRev
+          reflectorConfig,
+          plugboardConfig
         );
 
+        // Encode/decode cipher text and check for known plain text
         const plainText = enigma.encode(cipherText);
         if (plainText.includes(knownPlainText))
           return { config: { posA, posB, posC }, plainText };
