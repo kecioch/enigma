@@ -1,6 +1,7 @@
 import React from "react";
-import { Enigma } from "./services/enigma/enigma";
 import { RotorConfig } from "./services/enigma/rotor";
+import EnigmaContainer from "./components/EnigmaContainer";
+import { Enigma } from "./services/enigma/enigma";
 
 function App() {
   const wiringA = "BDFHJLCPRTXVZNYEIWGAKMUSQO";
@@ -33,8 +34,9 @@ function App() {
   console.log(`Encoded Text: ${result}`);
 
   return (
-    <div className="App">
-      <h1>Enigma</h1>
+    <div className="flex flex-col items-center gap-8 mt-11 mb-10">
+      <h1 className="text-3xl text-white uppercase font-light">Enigma</h1>
+      <EnigmaContainer />
     </div>
   );
 }
