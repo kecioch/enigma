@@ -2,9 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 
 interface Props {
   char: string;
+  onKeyPressed: (value: string) => void;
 }
 
-const InputKey = ({ char }: Props) => {
+const InputKey = ({ char, onKeyPressed }: Props) => {
   const [isPressed, setIsPressed] = useState(false);
 
   const playSoundEffect = () => {
@@ -20,8 +21,9 @@ const InputKey = ({ char }: Props) => {
     if (!isPressed) {
       playSoundEffect();
       setIsPressed(true);
+      onKeyPressed(char);
     }
-  }, [isPressed]);
+  }, [isPressed, onKeyPressed, char]);
 
   const handleKeyUp = () => setIsPressed(false);
 
@@ -36,7 +38,11 @@ const InputKey = ({ char }: Props) => {
   // Handle keyboard events
   useEffect(() => {
     const onKeyDown = (ev: any) => {
-      if (ev.key.toLowerCase() === char.toLowerCase() && !isPressed)
+      if (
+        ev.key.toLowerCase() === char.toLowerCase() &&
+        !isPressed &&
+        !(ev.key.toLowerCase() === "v" && (ev.metaKey || ev.ctrlKey))
+      )
         handleMouseDown();
     };
 
@@ -64,7 +70,7 @@ const InputKey = ({ char }: Props) => {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleKeyUp}
       >
-        <span className="text-center text-xl">{char}</span>
+        <span className="text-center text-xl font-mono">{char}</span>
       </button>
       <div className={`bg-slate-700 w-[0.1em] ${isPressed ? "h-1" : "h-3"}`} />
     </div>

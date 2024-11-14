@@ -59,6 +59,14 @@ export class Enigma {
     return encoded;
   }
 
+  public getPositions() {
+    return {
+      posA: this.rotorA.getPosition(),
+      posB: this.rotorB.getPosition(),
+      posC: this.rotorC.getPosition(),
+    };
+  }
+
   // Method to update the rotations of every rotor
   private checkRotations() {
     this.rotations++;

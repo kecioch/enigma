@@ -1,22 +1,28 @@
-import React from "react";
+import React, { ClipboardEvent } from "react";
 import { faCopy, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ActionButton from "./ActionButton";
+import { useClipboard } from "../../hooks/useClipboard";
 
 type Mode = "USER_INPUT" | "OUTPUT";
 
 interface Props {
   mode: Mode;
+  text: string;
+  onPaste?: (text: string) => void;
+  onClear?: () => void;
 }
 
-const NoteField = ({ mode }: Props) => {
+const NoteField = ({ mode, text, onPaste, onClear }: Props) => {
+  const copyText = useClipboard();
   const isUserInput = mode === "USER_INPUT";
 
-  const handleClear = () => {
-    console.log("CLEAR!");
-  };
+  const handleClear = () => onClear && onClear();
 
-  const handleCopy = () => {
-    console.log("HANDLE COPY");
+  const handleCopy = () => copyText(text);
+
+  const handlePaste = (ev: ClipboardEvent<HTMLTextAreaElement>) => {
+    const text = ev.clipboardData.getData("text");
+    onPaste && onPaste(text);
   };
 
   return (
@@ -41,8 +47,12 @@ const NoteField = ({ mode }: Props) => {
         />
       </div>
       <textarea
-        className="w-full mt-3 rounded-lg resize-none p-2 bg-[#78d6d4] h-[15em] sm:h-[20em]"
+        className="w-full mt-3 rounded-lg resize-none p-2 font-mono tracking-wide bg-[#78d6d4] h-[15em] sm:h-[20em]"
         disabled={!isUserInput}
+        value={text}
+        onPaste={handlePaste}
+        spellCheck={false}
+        onChange={() => {}}
       />
     </div>
   );

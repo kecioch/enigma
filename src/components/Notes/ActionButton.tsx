@@ -7,6 +7,7 @@ interface Props {
   title: string;
   actionText: string;
   onClick: () => void;
+  statusDelay?: number;
   className?: string;
 }
 
@@ -15,6 +16,7 @@ const ActionButton = ({
   title,
   actionText,
   onClick,
+  statusDelay = 1500,
   className,
 }: Props) => {
   const [clicked, setClicked] = useState(false);
@@ -23,7 +25,7 @@ const ActionButton = ({
     if (clicked) return;
     setClicked(true);
     onClick();
-    setTimeout(() => setClicked(false), 1500);
+    setTimeout(() => setClicked(false), statusDelay);
   };
 
   return (

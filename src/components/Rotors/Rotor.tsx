@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { ALPHABET } from "../../services/enigma/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
-const Rotor = () => {
-  const [position, setPosition] = useState(0);
+interface Props {
+  position: number;
+  onChange: (value: number) => void;
+}
 
+const Rotor = ({ position, onChange }: Props) => {
   const handleUp = () =>
-    setPosition((prev) => (prev >= ALPHABET.length - 1 ? 0 : ++prev));
+    onChange(position >= ALPHABET.length - 1 ? 0 : ++position);
 
   const handleDown = () =>
-    setPosition((prev) => (prev <= 0 ? ALPHABET.length - 1 : --prev));
+    onChange(position <= 0 ? ALPHABET.length - 1 : --position);
 
   return (
     <div className="flex flex-col gap-3 w-16 justify-center items-center">
@@ -23,7 +26,7 @@ const Rotor = () => {
       <input
         type="text"
         value={ALPHABET[position]}
-        className="text-center h-9 w-16"
+        className="text-center h-9 w-16 font-mono"
         disabled
       />
       <button
