@@ -21,7 +21,6 @@ const COLORS = [
 
 const Plugboard = ({ className }: Props) => {
   const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-  console.log(color);
 
   const plugRows = KEY_LAYOUT.map((row, i) => (
     <div key={i} className="flex flex-row justify-center gap-4 sm:gap-10">
