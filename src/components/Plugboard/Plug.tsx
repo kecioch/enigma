@@ -3,12 +3,18 @@ import React from "react";
 interface Props {
   char: string;
   connected: boolean;
+  onPress: (char: string) => void;
   color?: string;
 }
 
-const Plug = ({ char, connected, color }: Props) => {
+const Plug = ({ char, connected, onPress, color }: Props) => {
+  const handleClick = () => onPress(char);
+
   return (
-    <button className="flex flex-col justify-center items-center">
+    <button
+      className="flex flex-col justify-center items-center"
+      onClick={handleClick}
+    >
       <span className="font-mono">{char}</span>
       <div className="w-6 h-6 bg-slate-400 rounded-full flex justify-center items-center">
         <div

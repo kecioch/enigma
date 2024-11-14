@@ -1,37 +1,52 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import Rotor from "./Rotor";
-
-export type RotorPositions = { posA: number; posB: number; posC: number };
+import { faArrowRotateLeft, faGear } from "@fortawesome/free-solid-svg-icons";
+import IconButton from "../UI/IconButton";
+import { RotorPositions, RotorSelection } from "../../hooks/useEnigma";
 
 interface Props {
   positions: RotorPositions;
-  setPositions: Dispatch<SetStateAction<RotorPositions>>;
+  onIncrement: (rotor: RotorSelection) => void;
+  onDecrement: (rotor: RotorSelection) => void;
+  onReset: () => void;
 }
 
-const Rotors = ({ positions, setPositions }: Props) => {
-  const handleChangeRotorA = (value: number) => {
-    setPositions((prev) => {
-      return { ...prev, posA: value };
-    });
-  };
-
-  const handleChangeRotorB = (value: number) => {
-    setPositions((prev) => {
-      return { ...prev, posB: value };
-    });
-  };
-
-  const handleChangeRotorC = (value: number) => {
-    setPositions((prev) => {
-      return { ...prev, posC: value };
-    });
-  };
-
+const Rotors = ({ positions, onIncrement, onDecrement, onReset }: Props) => {
   return (
-    <div className="flex gap-10 justify-center">
-      <Rotor position={positions.posC} onChange={handleChangeRotorC} />
-      <Rotor position={positions.posB} onChange={handleChangeRotorB} />
-      <Rotor position={positions.posA} onChange={handleChangeRotorA} />
+    <div className="flex justify-center items-center">
+      <div className="flex gap-10 justify-center relative items-center">
+        <div className="absolute -left-10">
+          <IconButton
+            icon={faGear}
+            title="Configure rotor settings"
+            iconClassName="w-5 h-5"
+            onClick={() => {}}
+          />
+        </div>
+        <Rotor
+          position={positions.posC}
+          onIncrement={() => onIncrement("C")}
+          onDecrement={() => onDecrement("C")}
+        />
+        <Rotor
+          position={positions.posB}
+          onIncrement={() => onIncrement("B")}
+          onDecrement={() => onDecrement("B")}
+        />
+        <Rotor
+          position={positions.posA}
+          onIncrement={() => onIncrement("A")}
+          onDecrement={() => onDecrement("A")}
+        />
+        <div className="absolute -right-10">
+          <IconButton
+            icon={faArrowRotateLeft}
+            title="Reset positions"
+            iconClassName="w-5 h-5"
+            onClick={onReset}
+          />
+        </div>
+      </div>
     </div>
   );
 };
