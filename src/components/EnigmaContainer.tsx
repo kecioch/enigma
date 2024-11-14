@@ -15,9 +15,9 @@ import {
 } from "../services/enigma/constants";
 import { useEnigma } from "../hooks/useEnigma";
 
-const rotorConfigA: RotorConfig = { wiring: wiringA, notch: 22, startPos: 19 };
-const rotorConfigB: RotorConfig = { wiring: wiringB, notch: 16, startPos: 20 };
-const rotorConfigC: RotorConfig = { wiring: wiringC, notch: 5, startPos: 19 };
+const rotorConfigA: RotorConfig = { wiring: wiringA, notch: 22, startPos: 0 };
+const rotorConfigB: RotorConfig = { wiring: wiringB, notch: 16, startPos: 0 };
+const rotorConfigC: RotorConfig = { wiring: wiringC, notch: 5, startPos: 0 };
 const reflectorConfig = wiringRev;
 
 const EnigmaContainer = () => {

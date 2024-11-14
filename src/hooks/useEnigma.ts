@@ -2,17 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import { Enigma } from "../services/enigma/enigma";
 import { RotorConfig } from "../services/enigma/rotor";
 import { ALPHABET } from "../services/enigma/constants";
+import { COLOR_PALETTE } from "../constants/Colors";
 
 export type RotorPositions = { posA: number; posB: number; posC: number };
 
 export type RotorSelection = "A" | "B" | "C";
+
+export interface PlugConfig {
+  connected: string[];
+  colorCode: string;
+}
 
 interface UseEnigmaReturn {
   inputText: string;
   outputText: string;
   outputLight: string;
   rotorPositions: RotorPositions;
-  plugboard: Map<string, string>;
+  plugboard: PlugConfig[];
   handleRotorIncrement: (rotor: RotorSelection) => void;
   handleRotorDecrement: (rotor: RotorSelection) => void;
   handleChangeInput: (char: string) => void;
@@ -38,23 +44,26 @@ export const useEnigma = (config: Config): UseEnigmaReturn => {
     posB: config.rotorConfigB.startPos ?? 0,
     posC: config.rotorConfigC.startPos ?? 0,
   });
-  const [plugboard, setPlugboard] = useState<Map<string, string>>(
-    new Map([
-      ["A", "H"],
-      ["K", "V"],
-    ])
-  );
+  const [plugboard, setPlugboard] = useState<PlugConfig[]>([]);
   let enigma = useRef<Enigma>();
   let lastPressedPlug = useRef<string>("");
+  const colorsAvail = useRef([...COLOR_PALETTE]);
 
   // Init enigma and update on changes
   useEffect(() => {
+    // Create plugboard map based on PlugConfig state
+    const plugboardConfig = new Map<string, string>();
+    plugboard.forEach((con) =>
+      plugboardConfig.set(con.connected[0], con.connected[1])
+    );
+
+    // Create Enigma
     enigma.current = new Enigma(
       { ...config.rotorConfigA, startPos: rotorPositions.posA },
       { ...config.rotorConfigB, startPos: rotorPositions.posB },
       { ...config.rotorConfigC, startPos: rotorPositions.posC },
       config.reflectorConfig,
-      plugboard
+      plugboardConfig
     );
   }, [rotorPositions, config, plugboard]);
 
@@ -129,50 +138,44 @@ export const useEnigma = (config: Config): UseEnigmaReturn => {
     }
   };
 
-  const removePlug = (key: string) => {
+  const removePlug = (index: number) => {
     lastPressedPlug.current = "";
     setPlugboard((prev) => {
-      const newPlugboard = new Map(prev);
-      newPlugboard.delete(key);
+      // Make color of deleted connection available again
+      colorsAvail.current.push(prev[index].colorCode);
+      // Delete connection
+      const newPlugboard = [...prev];
+      newPlugboard.splice(index, 1);
       return newPlugboard;
     });
   };
 
-  const addPlug = (key: string, value: string) => {
+  const addPlug = (connections: string[]) => {
     lastPressedPlug.current = "";
-    setPlugboard((prev) => {
-      const newPlugboard = new Map(prev);
-      newPlugboard.set(key, value);
-      console.log(prev);
-      console.log(newPlugboard);
-      return newPlugboard;
-    });
+    const color = colorsAvail.current.splice(0, 1).join();
+    setPlugboard((prev) => [
+      ...prev,
+      { connected: connections, colorCode: color },
+    ]);
   };
 
   const handlePressPlug = (char: string) => {
-    console.log(char);
     let found = false;
 
     // Find whether plug is already connected
-    // Search as key
-    if (plugboard.has(char)) {
-      found = true;
-      removePlug(char);
-    } else {
-      // Search as value
-      for (let [key, value] of plugboard.entries()) {
-        if (value === char) {
-          found = true;
-          removePlug(key);
-          break;
-        }
+    plugboard.forEach((con, i) => {
+      if (con.connected.includes(char)) {
+        found = true;
+        removePlug(i);
+        return;
       }
-    }
+    });
 
-    if (!found && lastPressedPlug.current !== "") {
-      addPlug(lastPressedPlug.current, char);
-      //   lastPressedPlug.current = "";
-    } else if (!found && lastPressedPlug.current === "") {
+    // Update last pressed plug and check whether a new connection is established
+    if (found) return;
+    if (lastPressedPlug.current !== "" && lastPressedPlug.current !== char) {
+      addPlug([lastPressedPlug.current, char]);
+    } else {
       lastPressedPlug.current = char;
     }
   };

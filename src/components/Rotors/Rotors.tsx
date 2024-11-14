@@ -20,7 +20,7 @@ const Rotors = ({ positions, onIncrement, onDecrement, onReset }: Props) => {
             icon={faGear}
             title="Configure rotor settings"
             iconClassName="w-5 h-5"
-            onClick={() => {}}
+            onClick={() => {alert("To be implemented")}}
           />
         </div>
         <Rotor
