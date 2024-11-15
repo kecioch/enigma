@@ -57,6 +57,7 @@ const EnigmaContainer = () => {
         <Notes
           inputText={enigma.inputText}
           outputText={enigma.outputText}
+          onKeyPressed={enigma.handleChangeInput}
           onPasteInput={enigma.handlePasteInput}
           onClearInput={enigma.handleClearInput}
         />

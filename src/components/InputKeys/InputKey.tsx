@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
 
 interface Props {
   char: string;
@@ -38,10 +39,13 @@ const InputKey = ({ char, onKeyPressed }: Props) => {
   // Handle keyboard events
   useEffect(() => {
     const onKeyDown = (ev: any) => {
+      // Handle KeyDown only for web.
+      // For mobile devices the onInput event on the textarea are responsible.
       if (
         ev.key.toLowerCase() === char.toLowerCase() &&
         !isPressed &&
-        !(ev.key.toLowerCase() === "v" && (ev.metaKey || ev.ctrlKey))
+        !(ev.key.toLowerCase() === "v" && (ev.metaKey || ev.ctrlKey)) &&
+        !isMobile
       )
         handleMouseDown();
     };

@@ -4,6 +4,7 @@ import NoteField from "./NoteField";
 interface Props {
   inputText: string;
   outputText: string;
+  onKeyPressed: (char: string) => void;
   onPasteInput: (text: string) => void;
   onClearInput: () => void;
 }
@@ -11,6 +12,7 @@ interface Props {
 const Notes = ({
   inputText,
   outputText,
+  onKeyPressed,
   onPasteInput,
   onClearInput,
 }: Props) => {
@@ -19,6 +21,7 @@ const Notes = ({
       <NoteField
         mode="USER_INPUT"
         text={inputText}
+        onChange={onKeyPressed}
         onPaste={onPasteInput}
         onClear={onClearInput}
       />

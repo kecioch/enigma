@@ -68,8 +68,20 @@ export const useEnigma = (config: Config): UseEnigmaReturn => {
   }, [rotorPositions, config, plugboard]);
 
   // Utility Functions
-  const encode = (text: string) => {
+  const filterInput = (input: string) => {
+    // Filter input to only allow alphabetic input
+    const allowedSet = new Set(ALPHABET.toUpperCase());
+    const result = [...input.toUpperCase()]
+      .filter((char) => allowedSet.has(char))
+      .join("");
+    return result;
+  };
+
+  const encode = (input: string) => {
     if (!enigma.current) return;
+    const text = filterInput(input);
+    if (!text || text.length <= 0) return;
+
     const encoded = enigma.current.encode(text);
     const { posA, posB, posC } = enigma.current.getPositions();
     setInputText((prev) => prev + text);
