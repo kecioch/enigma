@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/enigma/static/css/main.25d20d9a.css",
+    "main.js": "/enigma/static/js/main.baae143e.js",
+    "index.html": "/enigma/index.html",
+    "main.25d20d9a.css.map": "/enigma/static/css/main.25d20d9a.css.map",
+    "main.baae143e.js.map": "/enigma/static/js/main.baae143e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.25d20d9a.css",
+    "static/js/main.baae143e.js"
+  ]
+}
