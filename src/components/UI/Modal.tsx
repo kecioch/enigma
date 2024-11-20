@@ -24,13 +24,13 @@ const Modal = ({ children, onClose }: Props) => {
   }, []);
 
   return (
-    <div className="h-screen w-screen fixed top-0 right-0 z-40 flex items-end justify-center sm:items-center">
+    <div className="h-screen w-screen fixed bottom-0 right-0 z-40 flex items-end justify-center sm:items-center">
       <div
-        className="backdrop-blur-sm bg-clip-padding backdrop-filter bg-black bg-opacity-50  w-screen h-screen absolute"
+        className="backdrop-blur-sm bg-clip-padding backdrop-filter bg-black bg-opacity-50 w-screen h-screen absolute"
         onClick={handleClose}
       />
       <div
-        className={`bg-white z-50 w-full max-w-[40em] rounded-lg p-3 pb-16 md:pb-3 transition-all ${
+        className={`bg-white z-50 w-full max-w-[40em] rounded-lg p-3 transition-all ${
           !showed && "translate-y-96"
         }`}
       >
