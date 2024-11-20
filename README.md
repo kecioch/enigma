@@ -19,6 +19,7 @@ You can see the application in action by checking out the [live demo](https://en
 
 - Interactive web-based simulator of the Enigma machine
 - Customizable rotor configuration
+- Selection of different Enigma models
 - Configurable plugboard for advanced cipher customization
 - Keyboard input with real-time visual key lamp output
 - Acoustic keystroke feedback 
