@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Enigma } from "../services/enigma/enigma";
-import { RotorConfig } from "../services/enigma/rotor";
 import { ALPHABET } from "../services/enigma/constants";
 import { COLOR_PALETTE } from "../constants/Colors";
+import { RotorConfig } from "../services/enigma/types";
 
 export type RotorPositions = { posA: number; posB: number; posC: number };
 
@@ -11,6 +11,14 @@ export type RotorSelection = "A" | "B" | "C";
 export interface PlugConfig {
   connected: string[];
   colorCode: string;
+}
+
+export interface ModelIndexSelection {
+  index: number;
+  indexWiringA: number;
+  indexWiringB: number;
+  indexWiringC: number;
+  indexWiringRef: number;
 }
 
 interface UseEnigmaReturn {
@@ -25,24 +33,27 @@ interface UseEnigmaReturn {
   handlePasteInput: (text: string) => void;
   handlePressPlug: (char: string) => void;
   handleClearInput: () => void;
+  handleChangeConfig: (config: Config) => void;
   resetRotorPositions: () => void;
 }
 
-interface Config {
+export interface Config {
   rotorConfigA: RotorConfig;
   rotorConfigB: RotorConfig;
   rotorConfigC: RotorConfig;
   reflectorConfig: string;
+  entryConfig: string;
 }
 
-export const useEnigma = (config: Config): UseEnigmaReturn => {
+export const useEnigma = (configInit: Config): UseEnigmaReturn => {
+  const [config, setConfig] = useState(configInit);
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [outputLight, setOutputLight] = useState("");
   const [rotorPositions, setRotorPositions] = useState<RotorPositions>({
-    posA: config.rotorConfigA.startPos ?? 0,
-    posB: config.rotorConfigB.startPos ?? 0,
-    posC: config.rotorConfigC.startPos ?? 0,
+    posA: 0,
+    posB: 0,
+    posC: 0,
   });
   const [plugboard, setPlugboard] = useState<PlugConfig[]>([]);
   let enigma = useRef<Enigma>();
@@ -63,6 +74,7 @@ export const useEnigma = (config: Config): UseEnigmaReturn => {
       { ...config.rotorConfigB, startPos: rotorPositions.posB },
       { ...config.rotorConfigC, startPos: rotorPositions.posC },
       config.reflectorConfig,
+      config.entryConfig,
       plugboardConfig
     );
   }, [rotorPositions, config, plugboard]);
@@ -197,6 +209,12 @@ export const useEnigma = (config: Config): UseEnigmaReturn => {
     setOutputText("");
   };
 
+  const handleChangeConfig = (config: Config) => {
+    setConfig(config);
+    handleClearInput();
+    resetRotorPositions();
+  };
+
   const resetRotorPositions = () => {
     setRotorPositions({ posA: 0, posB: 0, posC: 0 });
     setOutputLight("");
@@ -215,6 +233,7 @@ export const useEnigma = (config: Config): UseEnigmaReturn => {
     handlePasteInput,
     handlePressPlug,
     handleClearInput,
+    handleChangeConfig,
     resetRotorPositions,
   };
 };

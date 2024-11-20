@@ -1,11 +1,6 @@
 import { ALPHABET } from "./constants";
 import { EnigmaBaseComponent } from "./enigma-base-component";
-
-export interface RotorConfig {
-  wiring: string;
-  notch?: number;
-  startPos?: number;
-}
+import { RotorConfig } from "./types";
 
 export class Rotor extends EnigmaBaseComponent {
   private wiringOffset: number[]; // Represent the internal wiring. Offset = Index_Wiring_Letter_Alphabet - Index_Letter_Alphabet
@@ -54,12 +49,5 @@ export class Rotor extends EnigmaBaseComponent {
       const output = ALPHABET[(i + offset + ALPHABET.length) % ALPHABET.length];
       this.output[i] = output;
     }
-  }
-
-  // Method to encode/decode a letter backwards (out->in)
-  public backward(input: string): string {
-    const res = ALPHABET[this.output.indexOf(input.toUpperCase())];
-    if (res === undefined || res === null) throw new Error("Wrong rotor input");
-    return res;
   }
 }

@@ -1,11 +1,13 @@
 import { EnigmaBaseComponent } from "./enigma-base-component";
 import { Plugboard } from "./plugboard";
-import { Rotor, RotorConfig } from "./rotor";
+import { Rotor } from "./rotor";
+import { RotorConfig } from "./types";
 
 export class Enigma {
   private rotorA: Rotor;
   private rotorB: Rotor;
   private rotorC: Rotor;
+  private entry: EnigmaBaseComponent;
   private reflector: EnigmaBaseComponent;
   private plugboard: Plugboard;
   private rotations: number;
@@ -15,11 +17,20 @@ export class Enigma {
     rotorConfigB: RotorConfig,
     rotorConfigC: RotorConfig,
     reflectorConfig: string,
+    entryConfig: string,
     plugboardConfig: Map<string, string>
   ) {
+    if (rotorConfigA.notch === undefined)
+      throw new Error("Enigma rotor A config notch not defined");
+    if (rotorConfigB.notch === undefined)
+      throw new Error("Enigma rotor B config notch not defined");
+    if (rotorConfigC.notch === undefined)
+      throw new Error("Enigma rotor C config notch not defined");
+
     this.rotorA = new Rotor(rotorConfigA);
     this.rotorB = new Rotor(rotorConfigB);
     this.rotorC = new Rotor(rotorConfigC);
+    this.entry = new EnigmaBaseComponent(entryConfig);
     this.reflector = new EnigmaBaseComponent(reflectorConfig);
     this.plugboard = new Plugboard(plugboardConfig);
     this.rotations = 0;
@@ -41,13 +52,15 @@ export class Enigma {
       this.checkRotations();
 
       // Encode current letter
-      let result = this.rotorA.forward(letter);
+      let result: string = this.entry.forward(letter);
+      result = this.rotorA.forward(result);
       result = this.rotorB.forward(result);
       result = this.rotorC.forward(result);
       result = this.reflector.forward(result);
       result = this.rotorC.backward(result);
       result = this.rotorB.backward(result);
       result = this.rotorA.backward(result);
+      result = this.entry.backward(result);
 
       // Convert output with plugboard
       plugOut = this.plugboard.encode(result);

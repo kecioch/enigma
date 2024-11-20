@@ -1,6 +1,6 @@
 import { ALPHABET } from "./constants";
 import { Enigma } from "./enigma";
-import { RotorConfig } from "./rotor";
+import { RotorConfig } from "./types";
 
 type BruteForceEnigmaResult = {
   config: { posA: number; posB: number; posC: number };
@@ -15,6 +15,7 @@ export function bruteForceEnigma(
   configB: RotorConfig,
   configC: RotorConfig,
   reflectorConfig: string,
+  entryConfig: string,
   plugboardConfig: Map<string, string>
 ): BruteForceEnigmaResult | null {
   for (let posA = 0; posA < ALPHABET.length; posA++) {
@@ -40,6 +41,7 @@ export function bruteForceEnigma(
           rotorConfigB,
           rotorConfigC,
           reflectorConfig,
+          entryConfig,
           plugboardConfig
         );
 

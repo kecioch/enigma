@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import OutputLights from "./OutputLights/OutputLights";
 import InputKeys from "./InputKeys/InputKeys";
 import Plugboard from "./Plugboard/Plugboard";
@@ -6,27 +6,41 @@ import Notes from "./Notes/Notes";
 import Rotors from "./Rotors/Rotors";
 import Container from "./UI/Container";
 import Divider from "./UI/Divider";
-import { RotorConfig } from "../services/enigma/rotor";
-import {
-  wiringA,
-  wiringB,
-  wiringC,
-  wiringRev,
-} from "../services/enigma/constants";
-import { useEnigma } from "../hooks/useEnigma";
+import { ALPHABET, ENIGMA_MODELS } from "../services/enigma/constants";
+import { Config, ModelIndexSelection, useEnigma } from "../hooks/useEnigma";
 
-const rotorConfigA: RotorConfig = { wiring: wiringA, notch: 22, startPos: 0 };
-const rotorConfigB: RotorConfig = { wiring: wiringB, notch: 16, startPos: 0 };
-const rotorConfigC: RotorConfig = { wiring: wiringC, notch: 5, startPos: 0 };
-const reflectorConfig = wiringRev;
+const MODEL_INIT: ModelIndexSelection = {
+  index: 1,
+  indexWiringA: 0,
+  indexWiringB: 1,
+  indexWiringC: 2,
+  indexWiringRef: 1,
+};
 
 const EnigmaContainer = () => {
-  const enigma = useEnigma({
-    rotorConfigA,
-    rotorConfigB,
-    rotorConfigC,
-    reflectorConfig,
-  });
+  const [modelIndex, setModelIndex] = useState<ModelIndexSelection>(MODEL_INIT);
+
+  const createEnigmaConfig = (modelIndex: ModelIndexSelection): Config => {
+    return {
+      rotorConfigA:
+        ENIGMA_MODELS[modelIndex.index].rotors[modelIndex.indexWiringA],
+      rotorConfigB:
+        ENIGMA_MODELS[modelIndex.index].rotors[modelIndex.indexWiringB],
+      rotorConfigC:
+        ENIGMA_MODELS[modelIndex.index].rotors[modelIndex.indexWiringC],
+      reflectorConfig:
+        ENIGMA_MODELS[modelIndex.index].reflectors[modelIndex.indexWiringRef]
+          .wiring,
+      entryConfig: ENIGMA_MODELS[modelIndex.index]?.entryWiring || ALPHABET,
+    };
+  };
+
+  const enigma = useEnigma(createEnigmaConfig(MODEL_INIT));
+
+  const handleChangeModel = (index: ModelIndexSelection) => {
+    setModelIndex(index);
+    enigma.handleChangeConfig(createEnigmaConfig(index));
+  };
 
   return (
     <div className="w-full flex flex-col justify-center items-center gap-5 p-2">
@@ -35,9 +49,11 @@ const EnigmaContainer = () => {
           Rotor Configuration
         </h3>
         <Rotors
+          modelIndex={modelIndex}
           positions={enigma.rotorPositions}
           onIncrement={enigma.handleRotorIncrement}
           onDecrement={enigma.handleRotorDecrement}
+          onModelIndexChange={handleChangeModel}
           onReset={enigma.resetRotorPositions}
         />
       </Container>

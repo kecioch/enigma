@@ -15,6 +15,13 @@ export class EnigmaBaseComponent {
     return res;
   }
 
+  // Method to encode/decode a letter backwards (out->in)
+  public backward(input: string): string {
+    const res = ALPHABET[this.output.indexOf(input.toUpperCase())];
+    if (res === undefined || res === null) throw new Error("Wrong rotor input");
+    return res;
+  }
+
   // Method to validate wiring
   private validateWiring(wiring: string) {
     // Check whether wiring length is different than alphabeth length
