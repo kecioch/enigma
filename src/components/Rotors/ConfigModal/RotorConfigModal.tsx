@@ -56,7 +56,7 @@ const RotorConfigModal = ({
     });
   };
 
-  const handleChangeRev = (index: number) => {
+  const handleChangeRef = (index: number) => {
     onModelIndexChange({
       ...modelIndex,
       indexWiringRef: index,
@@ -80,10 +80,10 @@ const RotorConfigModal = ({
       </div>
       <div className="flex gap-5 justify-center items-end pt-10 pb-8 xs:gap-2">
         <RotorSelect
-          label="REV"
+          label="UKW"
           options={reflectors}
           value={modelIndex.indexWiringRef}
-          onChange={handleChangeRev}
+          onChange={handleChangeRef}
         />
         <div className="h-16 border-r-2 border-dotted border-black" />
         <RotorSelect

@@ -24,7 +24,7 @@ const Modal = ({ children, onClose }: Props) => {
   }, []);
 
   return (
-    <div className="h-screen w-screen fixed top-0 right-0 z-40 flex items-end justify-center md:items-center">
+    <div className="h-screen w-screen fixed top-0 right-0 z-40 flex items-end justify-center sm:items-center">
       <div
         className="backdrop-blur-sm bg-clip-padding backdrop-filter bg-black bg-opacity-50  w-screen h-screen absolute"
         onClick={handleClose}

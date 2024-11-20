@@ -8,6 +8,6 @@ export interface EnigmaModel {
 export interface RotorConfig {
   wiring: string;
   name?: string;
-  notch?: number;
+  notch?: string[];
   startPos?: number;
 }

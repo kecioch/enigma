@@ -5,9 +5,9 @@ import { RotorConfig } from "./types";
 export class Rotor extends EnigmaBaseComponent {
   private wiringOffset: number[]; // Represent the internal wiring. Offset = Index_Wiring_Letter_Alphabet - Index_Letter_Alphabet
   private position: number; // Current rotation
-  private notch: number; // Notch that triggers rotation of next rotor
+  private notch: string[]; // Notch that triggers rotation of next rotor
 
-  constructor({ wiring, notch = 1, startPos = 0 }: RotorConfig) {
+  constructor({ wiring, notch = [], startPos = 0 }: RotorConfig) {
     super(wiring);
     this.position = 0;
     this.notch = notch;
@@ -31,7 +31,7 @@ export class Rotor extends EnigmaBaseComponent {
   public getPosition = () => this.position;
 
   // Method to get the notch of the rotor
-  public getNotch = () => this.notch;
+  public getNotch = () => [...this.notch];
 
   // Method to rotate the rotor
   public rotate() {

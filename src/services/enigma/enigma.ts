@@ -1,3 +1,4 @@
+import { ALPHABET } from "./constants";
 import { EnigmaBaseComponent } from "./enigma-base-component";
 import { Plugboard } from "./plugboard";
 import { Rotor } from "./rotor";
@@ -11,6 +12,8 @@ export class Enigma {
   private reflector: EnigmaBaseComponent;
   private plugboard: Plugboard;
   private rotations: number;
+
+  private rotatedRotorB = false;
 
   constructor(
     rotorConfigA: RotorConfig,
@@ -86,10 +89,19 @@ export class Enigma {
     this.rotorA.rotate();
 
     const posA = this.rotorA.getPosition();
-    const posB = this.rotorB.getPosition();
+    const lastLetterA = ALPHABET[posA - 1 < 0 ? ALPHABET.length - 1 : posA - 1];
 
     // Rotate rotors based on previous rotor notches
-    if (posA > 0 && posA % this.rotorA.getNotch() === 0) this.rotorB.rotate();
-    if (posB > 0 && posB % this.rotorB.getNotch() === 0) this.rotorC.rotate();
+    if (this.rotorA.getNotch().includes(lastLetterA)) {
+      this.rotorB.rotate();
+      this.rotatedRotorB = true;
+    }
+
+    const posB = this.rotorB.getPosition();
+    const lastLetterB = ALPHABET[posB - 1 < 0 ? ALPHABET.length - 1 : posB - 1];
+    if (this.rotorB.getNotch().includes(lastLetterB) && this.rotatedRotorB) {
+      this.rotorC.rotate();
+      this.rotatedRotorB = false;
+    }
   }
 }
