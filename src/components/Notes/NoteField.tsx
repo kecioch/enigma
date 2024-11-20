@@ -1,8 +1,9 @@
-import React, { ChangeEvent, ClipboardEvent, useRef } from "react";
+import React, { ChangeEvent, ClipboardEvent, useEffect, useRef } from "react";
 import { faCopy, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ActionButton from "./ActionButton";
 import { useClipboard } from "../../hooks/useClipboard";
 import { isMobile } from "react-device-detect";
+import { filterInputAlphabet } from "../../services/utils";
 
 type Mode = "USER_INPUT" | "OUTPUT";
 
@@ -18,15 +19,28 @@ const NoteField = ({ mode, text, onChange, onPaste, onClear }: Props) => {
   const copyText = useClipboard();
   const isUserInput = mode === "USER_INPUT";
   const isPasting = useRef(false);
+  const oldInputText = useRef("");
 
-  const handleClear = () => onClear && onClear();
+  useEffect(() => {
+    oldInputText.current = text;
+  }, [text]);
+
+  const handleClear = () => {
+    if (onClear) {
+      onClear();
+      oldInputText.current = "";
+    }
+  };
 
   const handleCopy = () => copyText(text);
 
   const handlePaste = (ev: ClipboardEvent<HTMLTextAreaElement>) => {
     isPasting.current = true;
-    const text = ev.clipboardData.getData("text");
-    onPaste && onPaste(text);
+    const text = filterInputAlphabet(ev.clipboardData.getData("text"));
+    if (onPaste) {
+      onPaste(text);
+      oldInputText.current = text;
+    }
   };
 
   const handleChange = (ev: ChangeEvent<HTMLTextAreaElement>) => {
@@ -37,10 +51,19 @@ const NoteField = ({ mode, text, onChange, onPaste, onClear }: Props) => {
       isPasting.current = false;
       return;
     }
-    // alert("INPUT");
-    const value = ev.currentTarget.value;
+
+    const value = filterInputAlphabet(ev.currentTarget.value);
     const char = value[value.length - 1];
-    if (onChange && char !== undefined && char.length === 1) onChange(char);
+
+    if (
+      onChange &&
+      char !== undefined &&
+      char.length === 1 &&
+      value.length > oldInputText.current.length
+    ) {
+      onChange(char);
+      oldInputText.current = oldInputText.current + char;
+    }
   };
 
   return (

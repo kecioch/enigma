@@ -3,6 +3,7 @@ import { Enigma } from "../services/enigma/enigma";
 import { ALPHABET } from "../services/enigma/constants";
 import { COLOR_PALETTE } from "../constants/Colors";
 import { RotorConfig } from "../services/enigma/types";
+import { filterInputAlphabet } from "../services/utils";
 
 export type RotorPositions = { posA: number; posB: number; posC: number };
 
@@ -80,18 +81,9 @@ export const useEnigma = (configInit: Config): UseEnigmaReturn => {
   }, [rotorPositions, config, plugboard]);
 
   // Utility Functions
-  const filterInput = (input: string) => {
-    // Filter input to only allow alphabetic input
-    const allowedSet = new Set(ALPHABET.toUpperCase());
-    const result = [...input.toUpperCase()]
-      .filter((char) => allowedSet.has(char))
-      .join("");
-    return result;
-  };
-
   const encode = (input: string) => {
     if (!enigma.current) return;
-    const text = filterInput(input);
+    const text = filterInputAlphabet(input);
     if (!text || text.length <= 0) return;
 
     const encoded = enigma.current.encode(text);
