@@ -1,6 +1,6 @@
 <h1 align="center">
   ENIGMA 🔐
-  <p style="font-style: italic ">An Interactiv Web-Simulator</p>
+  <p style="font-style: italic ">An Interactive Web-Simulator</p>
 </h1>
 
 This project features a fully interactive basic implementation of the Enigma machine with customizable rotor and plugboard configurations, keyboard input with visual key lamp output and acoustic feedback for an immersive experience. Includes text areas for quick input/output, enabling fast copy-paste operations and easy comparison of encrypted and decrypted messages. Perfect for exploring the workings of the iconic cipher machine.
